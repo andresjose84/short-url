@@ -1,0 +1,24 @@
+FROM node:20.11.0-alpine
+
+# Set working directory
+RUN mkdir -p /var/www/shorturl
+WORKDIR /var/www/shorturl
+
+# Copiar el directorio y su contenido
+COPY . ./var/www/shorturl
+COPY package.json tsconfig.json tsconfig.build.json /var/www/shorturl/
+RUN yarn install --prod
+RUN yarn build
+
+
+# Dar permiso para ejecutar la applicación
+RUN adduser --disabled-password shorturluser
+RUN chown -R shorturl:shorturl /var/www/shorturl
+USER shorturluser
+
+# Limpiar el caché
+RUN yarn cache clean --force
+
+EXPOSE 3001
+
+CMD [ "yarn","start" ]

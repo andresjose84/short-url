@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  shorturlapp:
+    depends_on:
+      - db
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: shorturl-docker
+    container_name: shorturlapp
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    # working_dir: /var/www/shorturl
+    environment:
+      MONGODB: ${MONGODB}
+      PORT: ${PORT}
+      DEFAULT_LIMIT: ${DEFAULT_LIMIT}
+      NODE_ENV: production
+    # volumes:
+    #   - ./:/var/www/shorturl
+    networks:
+      - shorturl-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${PORT}/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  db:
+    image: mongo:7.0
+    container_name: mongo-shorturl
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGODB_DATABASE: express-shorturl
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - shorturl-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  mongodb_data:
+    name: shorturl_mongodb_data
+
+networks:
+  shorturl-network:
+    name: shorturl-network
+    driver: bridge
