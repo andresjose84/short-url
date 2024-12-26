@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://expressjs.com/" target="blank"><img src="https://expressjs.com/images/brand/logo-dark.svg" width="200" alt="Express Logo" /></a>
+</p>
+
 # URL Shortener API 🔗
 
 A robust and scalable REST API for creating and managing short URLs, built with Node.js, Express, MongoDB and TypeScript.
