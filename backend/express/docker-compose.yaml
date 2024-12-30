@@ -1,11 +1,23 @@
 services:
   db:
-    image: mongo:5
+    image: mongo:latest
     container_name: mongo-short-url
     restart: always
     ports:
       - 27017:27017
     environment:
-      MONGODB_DATABASE: short-url
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: J4c0b04ndr32
+      MONGO_INITDB_DATABASE: short-url
     volumes:
-      - ./mongo:/data/db
+      - ./mongo-data:/data/db
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    name: short-url-mongo-data

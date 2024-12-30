@@ -3,3 +3,4 @@ mongo
 .env
 .env.prod
 dist
+mongo-data
