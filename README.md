@@ -8,9 +8,10 @@ This repository contains various implementations of a URL shortener service, cre
 short-url/
 ├── backend/
 │   ├── nestjs/       # NestJS implementation with PostgreSQL
-│   └── express/      # Express.js implementation with MongoDB
+│   ├── express/      # Express.js implementation with MongoDB
+│   └── aws_lambda/   # Serverless implementation with MongoDB
 ├── frontend/         # (Coming soon) Different frontend implementations
-└── devops/          # (Coming soon) Infrastructure and deployment configurations
+└── devops/           # (Coming soon) Infrastructure and deployment configurations
 ```
 
 ## Overview 🎯
@@ -34,6 +35,13 @@ This is a learning-focused repository where you can find different implementatio
   - JWT authentication
   - RESTful API design
   - Swagger documentation
+
+- **AWS Lambda Version**
+  - Serverless architecture
+  - MongoDB database
+  - API Gateway integration
+  - AWS SAM for deployment
+  - CloudFormation templates
 
 ### Coming Soon 🚀
 
@@ -63,6 +71,11 @@ Each project has its own README with specific instructions. Navigate to the desi
 
 - [NestJS Backend](/backend/nestjs)
 - [Express Backend](/backend/express)
+- [AWS Lambda Backend](/backend/aws_lambda)
+
+## Contributing 🤝
+
+Feel free to contribute to any of the implementations or add new ones! Please read the contribution guidelines before submitting PRs.
 
 ## Author 👨‍💻
 
