@@ -1,0 +1,24 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=shorturl
+      - MONGO_INITDB_ROOT_PASSWORD=y0urP422w0rDH3r3
+      - MONGO_INITDB_DATABASE=short-url
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - sam_network
+
+networks:
+  sam_network:
+    name: sam_network
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    name: mongodb_data

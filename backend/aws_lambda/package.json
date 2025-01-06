@@ -1,0 +1,23 @@
+{
+  "name": "short-url-lambdas",
+  "version": "1.0.0",
+  "description": "Microservices for short url",
+  "main": "index.js",
+  "scripts": {
+    "dev": "sam local start-api -t ./template-x86_64.yml -l ./logs.log ",
+    "dev:arm": "sam local start-api -l ./sam.local.log ",
+    "dev:samlocal": "sam local start-api -l ./sam.local.log --docker-network sam_network ",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "find ./* -maxdepth 1 -name package.json ! -path './package.json' -execdir npm install \\;"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andresjose84/short-url"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andresjose84/short-url#issues"
+  },
+  "homepage": "https://github.com/andresjose84/short-url#readme"
+}

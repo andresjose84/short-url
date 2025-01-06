@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: "AWS::Serverless-2016-10-31"
+Description: Microservices Short Urls.
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Timeout: 30
+    Handler: index.handler
+  Api:
+    EndpointConfiguration: REGIONAL
+
+Parameters:
+  PROJECTNAME:
+    Type: String
+    Default: microservices_short_urls
+
+  BRANCH:
+    Type: String
+
+  PATH1:
+    Type: String
+    Default: microservices_load_data
+
+Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+        - arn:aws:iam::aws:policy/AmazonVPCFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: sts:AssumeRole
+
+  LoadDataFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH1}"
+      Description: "Populate test data in Database."
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./loadData
+      MemorySize: 512
+      Architectures:
+        - arm64
+      Events:
+        LambdaMicroservice:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/seed
+            Method: GET
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+Outputs:
+  ApiGateway:
+    Description: "API Gateway endpoint URL for Prod stage for function."
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+  FunctionIamRole:
+    Description: "Implicit IAM Role created for function"
+    Value: !GetAtt LambdaRole.Arn

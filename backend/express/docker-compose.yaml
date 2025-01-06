@@ -7,7 +7,7 @@ services:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: J4c0b04ndr32
+      MONGO_INITDB_ROOT_PASSWORD: y0urP422w0rDH3r3
       MONGO_INITDB_DATABASE: short-url
     volumes:
       - ./mongo-data:/data/db
