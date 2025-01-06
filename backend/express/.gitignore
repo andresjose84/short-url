@@ -4,3 +4,4 @@ mongo
 .env.prod
 dist
 mongo-data
+package-lock.json
