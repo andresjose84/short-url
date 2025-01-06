@@ -4,15 +4,18 @@
   "description": "Microservices for short url",
   "main": "index.js",
   "scripts": {
-    "dev": "sam local start-api -t ./template-x86_64.yml -l ./logs.log ",
+    "preinstall": "find ./* -maxdepth 1 -name package.json ! -path './package.json' -execdir npm install \\;",
+    "predev": "find ./* -maxdepth 1 -name package.json ! -path './package.json' -execdir npm install \\;",
+    "predev:arm": "find ./* -maxdepth 1 -name package.json ! -path './package.json' -execdir npm install \\;",
+    "predev:samlocal": "find ./* -maxdepth 1 -name package.json ! -path './package.json' -execdir npm install \\;",
+    "dev": "sam local start-api -t ./template.yaml -l ./sam.local.log ",
     "dev:arm": "sam local start-api -l ./sam.local.log ",
     "dev:samlocal": "sam local start-api -l ./sam.local.log --docker-network sam_network ",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "find ./* -maxdepth 1 -name package.json ! -path './package.json' -execdir npm install \\;"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/andresjose84/short-url"
+    "url": "git+https://github.com/andresjose84/short-url.git"
   },
   "author": "",
   "license": "ISC",
