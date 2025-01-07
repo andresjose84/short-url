@@ -1,12 +1,31 @@
+const dotenv = require( "dotenv" );
+
+const connectToDatabase = require( "./database/config" );
+
+const deleteUser = require( "./controllers/users.controller" );
 
 const app = async event => {
-    return {
-        statusCode: 200,
-        body: "",
-        headers: {
-            "Content-Type": "application/json"
-        }
+    try {
+        dotenv.config();
+
+        await connectToDatabase();
+
+        const id = event.pathParameters ? event.pathParameters.id : null;
+
+        return await deleteUser( id );
     }
+    catch ( error ) {
+        console.log( 'Error loading seed data', error );
+
+        return {
+            statusCode: 501,
+            body: JSON.stringify( {
+                ok: false,
+                msg: 'error loading seed data'
+            } )
+        };
+    }
+
 }
 
 module.exports = app;

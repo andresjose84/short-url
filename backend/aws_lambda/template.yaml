@@ -5,7 +5,7 @@ Description: Microservices Short Urls.
 Globals:
   Function:
     Runtime: nodejs22.x
-    Timeout: 30
+    Timeout: 10
     Handler: index.handler
   Api:
     EndpointConfiguration: REGIONAL
@@ -21,6 +21,22 @@ Parameters:
   PATH1:
     Type: String
     Default: microservices_load_data
+
+  PATH2:
+    Type: String
+    Default: microservices_get_users
+
+  PATH3:
+    Type: String
+    Default: microservices_create_users
+
+  PATH4:
+    Type: String
+    Default: microservices_update_users
+
+  PATH5:
+    Type: String
+    Default: microservices_delete_users
 
 Resources:
   LambdaRole:
@@ -45,15 +61,108 @@ Resources:
       Description: "Populate test data in Database."
       Role: !GetAtt LambdaRole.Arn
       CodeUri: ./loadData
-      MemorySize: 512
+      MemorySize: 256
       Architectures:
         - arm64
       Events:
-        LambdaMicroservice:
+        LoadData:
           Type: Api
           Properties:
             Path: /api/v1.0/seed
             Method: GET
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  GetUsersFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH2}"
+      Description: "Get users."
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./getUsers
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        GetUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/users/{id}
+            Method: get
+        GetAllUsers:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/users
+            Method: get
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  CreateUsersFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH3}"
+      Description: "Get users."
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./createUser
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/users
+            Method: post
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  UpdateUsersFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH4}"
+      Description: "Get users."
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./updateUser
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/users/{id}
+            Method: put
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  DeleteUsersFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH5}"
+      Description: "Get users."
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./deleteUser
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/users/{id}
+            Method: delete
       Environment:
         Variables:
           DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
