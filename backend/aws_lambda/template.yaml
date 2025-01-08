@@ -37,6 +37,34 @@ Parameters:
   PATH5:
     Type: String
     Default: microservices_delete_users
+  
+  PATH6:
+    Type: String
+    Default: microservices_get_url_shorter
+
+  PATH7:
+    Type: String
+    Default: microservices_create_shorturl
+
+  PATH8:
+    Type: String
+    Default: microservices_update_shorturl
+
+  PATH9:
+    Type: String
+    Default: microservices_delete_shorturl
+
+  PATH10:
+    Type: String
+    Default: microservices_get_shorturl
+
+  PATH11:
+    Type: String
+    Default: microservices_login_users
+
+  PATH12:
+    Type: String
+    Default: microservices_validate_token
 
 Resources:
   LambdaRole:
@@ -162,6 +190,165 @@ Resources:
           Type: Api
           Properties:
             Path: /api/v1.0/users/{id}
+            Method: delete
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  GetShorterUrlFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH6}"
+      Description: "Get ShortUrl."
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./getUrlShorter
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        GetUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/shorturl/{id}
+            Method: get
+        GetAllUsers:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/shorturl
+            Method: get
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  CreateShortUrlFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH7}"
+      Description: "Create ShortUrl."
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./createShortUrl
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/shorturl
+            Method: post
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  UpdateShortUrlFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH8}"
+      Description: "Update ShortUrl"
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./updateShortUrl
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/shorturl/{id}
+            Method: put
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  DeleteShortUrlFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH9}"
+      Description: "Delete ShortUrl"
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./deleteShortUrl
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/shorturl/{id}
+            Method: delete
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  GetShortUrlFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH10}"
+      Description: "Create ShortUrl."
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./getShortUrl
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  LoginUsersFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH11}"
+      Description: "Update ShortUrl"
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./loginUser
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/auth/login
+            Method: post
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
+  ValidateTokenFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH12}"
+      Description: "Delete ShortUrl"
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./validateToken
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/auth/check-status
             Method: delete
       Environment:
         Variables:

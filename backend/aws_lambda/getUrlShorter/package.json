@@ -1,5 +1,5 @@
 {
-  "name": "update_user",
+  "name": "get_url_shorter",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "mongoose": "^8.9.3"
   }

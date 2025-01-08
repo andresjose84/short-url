@@ -105,6 +105,7 @@ export const updateShortUrl = async ( req: Request, res: Response ) => {
         } );
     }
 };
+
 export const deleteShortUrl = async ( req: Request, res: Response ) => {
     try {
         const { shortId } = req.params;
