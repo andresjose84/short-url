@@ -349,7 +349,7 @@ Resources:
           Type: Api
           Properties:
             Path: /api/v1.0/auth/check-status
-            Method: delete
+            Method: get
       Environment:
         Variables:
           DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
