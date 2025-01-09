@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/andresjose84/short-url#issues"
   },
-  "homepage": "https://github.com/andresjose84/short-url#readme"
+  "homepage": "https://github.com/andresjose84/short-url#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
+  }
 }
