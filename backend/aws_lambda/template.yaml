@@ -301,10 +301,15 @@ Resources:
       Architectures:
         - arm64
       Events:
-        CreateUser:
+        GetHome:
           Type: Api
           Properties:
             Path: /
+            Method: get
+        GetShortUrl:
+          Type: Api
+          Properties:
+            Path: /{shorturi}
             Method: get
       Environment:
         Variables:
