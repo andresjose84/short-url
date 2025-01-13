@@ -23,7 +23,11 @@ This project is a backend service for a URL shortening application, built using 
     cd backend/aws_lambda
     ```
 
-2. Edit template.yaml and set environment var DB CNN with MongoDB string connection.
+2. Edit `template.yaml` and set environment variables for MongoDB connection:
+
+    - `DB_CNN`: MongoDB connection string.
+    - `SECRET_JWT_SEED`: Secret for JWT signing.
+    - `EXPIRE_JWT`: JWT expiration time.
 
 ## Running Locally
 
@@ -33,40 +37,104 @@ This project is a backend service for a URL shortening application, built using 
     sam local start-api
     ```
 
-2. Use NPM to running local
+2. Run locally using NPM:
 
     ```bash
     npm run dev
     ```
 
-3. Using docker MongoDB and NPM
+3. Use Docker with MongoDB and NPM:
 
     ```bash
     docker-compose up -d
     npm run dev:samlocal
     ```
 
-4. Testing data
+4. Test seed data with:
 
-    <http://localhost:3000/api/v1.0/seed>
+    ```bash
+    curl http://localhost:3000/api/v1.0/seed
+    ```
 
 5. The API will be available at `http://localhost:3000`.
+
+## Features and Endpoints
+
+The application provides the following endpoints:
+
+### Users
+
+- `GET /api/v1.0/users` - Retrieve all users.
+- `GET /api/v1.0/users/{id}` - Retrieve a specific user by ID.
+- `POST /api/v1.0/users` - Create a new user.
+- `PUT /api/v1.0/users/{id}` - Update a user by ID.
+- `DELETE /api/v1.0/users/{id}` - Delete a user by ID.
+
+### Authentication
+
+- `POST /api/v1.0/auth/login` - Log in a user.
+- `GET /api/v1.0/auth/check-status` - Validate user token.
+
+### Short URLs
+
+- `GET /api/v1.0/shorturl` - Retrieve all short URLs.
+- `GET /api/v1.0/shorturl/{id}` - Retrieve a specific short URL by ID.
+- `POST /api/v1.0/shorturl` - Create a new short URL.
+- `PUT /api/v1.0/shorturl/{id}` - Update a short URL by ID.
+- `DELETE /api/v1.0/shorturl/{id}` - Delete a short URL by ID.
+
+### Redirection
+
+- `GET /{shorturi}` - Redirect to the original URL based on the short URI.
+
+### Seed Data
+
+- `GET /api/v1.0/seed` - Populate the database with test data.
+
+## Middleware Layer
+
+The project includes an AWS Lambda layer for authentication and authorization middleware. This layer is used to handle common authentication tasks across multiple functions.
+
+### Layer Details
+
+- **Layer Name**: `auth-middleware-layer`
+- **Description**: Authentication and authorization middleware
+- **Content Directory**: `layers/`
+- **Compatible Runtimes**: `nodejs22.x`
+- **Retention Policy**: Retain
+
+### Adding the Layer to Functions
+
+To use the middleware layer, include it in the `Layers` property of your Lambda function in the `template.yaml` file:
+
+```yaml
+Layers:
+  - !Ref AuthLayer
+```
 
 ## Deploying to AWS
 
 1. Package the application:
 
     ```bash
-    sam package --output-template-file template.yml --s3-bucket your-s3-bucket-name
+    sam package --output-template-file packaged.yml --s3-bucket your-s3-bucket-name
     ```
 
 2. Deploy the application:
 
     ```bash
-    sam deploy --template-file template.yml --stack-name short-url-backend --capabilities CAPABILITY_IAM
+    sam deploy --template-file packaged.yml --stack-name short-url-backend --capabilities CAPABILITY_IAM
     ```
 
 3. After deployment, note the API endpoint from the output.
+
+## Environment Variables
+
+The following environment variables are required:
+
+- `DB_CNN`: MongoDB connection string.
+- `SECRET_JWT_SEED`: Secret key for JWT.
+- `EXPIRE_JWT`: Expiration time for JWT tokens (e.g., "2h").
 
 ## License
 
