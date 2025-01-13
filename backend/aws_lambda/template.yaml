@@ -88,7 +88,7 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH1}"
       Description: "Populate test data in Database."
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./loadData
+      CodeUri: ./seed/loadData
       MemorySize: 256
       Architectures:
         - arm64
@@ -110,10 +110,12 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH2}"
       Description: "Get users."
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./getUsers
+      CodeUri: ./users/getUsers
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         GetUser:
           Type: Api
@@ -137,10 +139,12 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH3}"
       Description: "Get users."
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./createUser
+      CodeUri: ./users/createUser
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         CreateUser:
           Type: Api
@@ -159,10 +163,12 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH4}"
       Description: "Get users."
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./updateUser
+      CodeUri: ./users/updateUser
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         CreateUser:
           Type: Api
@@ -181,10 +187,12 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH5}"
       Description: "Get users."
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./deleteUser
+      CodeUri: ./users/deleteUser
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         CreateUser:
           Type: Api
@@ -197,16 +205,40 @@ Resources:
           SECRET_JWT_SEED: y0urP422w0rDH3r3
           EXPIRE_JWT: 2h
 
+  LoginUsersFunction:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH11}"
+      Description: "Update ShortUrl"
+      Role: !GetAtt LambdaRole.Arn
+      CodeUri: ./users/loginUser
+      MemorySize: 256
+      Architectures:
+        - arm64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/auth/login
+            Method: post
+      Environment:
+        Variables:
+          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
+          SECRET_JWT_SEED: y0urP422w0rDH3r3
+          EXPIRE_JWT: 2h
+
   GetShorterUrlFunction:
     Type: "AWS::Serverless::Function"
     Properties:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH6}"
       Description: "Get ShortUrl."
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./getUrlShorter
+      CodeUri: ./shorturls/getUrlShorter
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         GetUser:
           Type: Api
@@ -230,10 +262,12 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH7}"
       Description: "Create ShortUrl."
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./createShortUrl
+      CodeUri: ./shorturls/createShortUrl
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         CreateUser:
           Type: Api
@@ -252,10 +286,12 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH8}"
       Description: "Update ShortUrl"
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./updateShortUrl
+      CodeUri: ./shorturls/updateShortUrl
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         CreateUser:
           Type: Api
@@ -274,10 +310,12 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH9}"
       Description: "Delete ShortUrl"
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./deleteShortUrl
+      CodeUri: ./shorturls/deleteShortUrl
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         CreateUser:
           Type: Api
@@ -296,7 +334,7 @@ Resources:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH10}"
       Description: "Create ShortUrl."
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./getShortUrl
+      CodeUri: ./redirects/getShortUrl
       MemorySize: 256
       Architectures:
         - arm64
@@ -317,38 +355,18 @@ Resources:
           SECRET_JWT_SEED: y0urP422w0rDH3r3
           EXPIRE_JWT: 2h
 
-  LoginUsersFunction:
-    Type: "AWS::Serverless::Function"
-    Properties:
-      FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH11}"
-      Description: "Update ShortUrl"
-      Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./loginUser
-      MemorySize: 256
-      Architectures:
-        - arm64
-      Events:
-        CreateUser:
-          Type: Api
-          Properties:
-            Path: /api/v1.0/auth/login
-            Method: post
-      Environment:
-        Variables:
-          DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
-          SECRET_JWT_SEED: y0urP422w0rDH3r3
-          EXPIRE_JWT: 2h
-
   ValidateTokenFunction:
     Type: "AWS::Serverless::Function"
     Properties:
       FunctionName: !Sub "${PROJECTNAME}_${BRANCH}-${PATH12}"
       Description: "Delete ShortUrl"
       Role: !GetAtt LambdaRole.Arn
-      CodeUri: ./validateToken
+      CodeUri: ./redirects/validateToken
       MemorySize: 256
       Architectures:
         - arm64
+      Layers:
+        - !Ref AuthLayer
       Events:
         CreateUser:
           Type: Api
@@ -360,6 +378,16 @@ Resources:
           DB_CNN: mongodb://shorturl:y0urP422w0rDH3r3@mongodb:27017/short-url?authSource=admin
           SECRET_JWT_SEED: y0urP422w0rDH3r3
           EXPIRE_JWT: 2h
+
+  AuthLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: auth-middleware-layer
+      Description: Authentication and authorization middleware
+      ContentUri: layers/
+      CompatibleRuntimes:
+        - nodejs22.x
+      RetentionPolicy: Retain
 
 Outputs:
   ApiGateway:
